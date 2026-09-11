@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babbiii's Coupon Book 🎟️</title>
+  <!-- Google Fonts for aesthetic typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --text-main: #2D2D2D;
+      --text-muted: #6E6E6E;
+      --accent: #E88D94;
+      --accent-hover: #D87B82;
+      --disabled: #D1D1D1;
+      --gold-bg: #FFFDF0;
+      --gold-border: #F5C518;
+      --gold-accent: #D4A017;
+      --radius: 18px;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* --- LOGIN SECTION --- */
+    .login-card {
+      background: var(--card-bg);
+      padding: 32px 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .login-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .login-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #EAEAEA;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s;
+      background: #FAFAFA;
+    }
+
+    input[type="text"]:focus, input[type="date"]:focus {
+      border-color: var(--accent);
+      background: #FFF;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .error-msg {
+      color: #E53935;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* --- APP COVER & LIST --- */
+    #app-screen {
+      display: none;
+    }
+
+    .cover-card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      border: 1px solid #F0F0F0;
+    }
+
+    .cover-card .badge {
+      display: inline-block;
+      background: #FFE8EA;
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .cover-card h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .cover-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #EAEAEA;
+    }
+
+    /* --- COUPON CARDS --- */
+    .coupon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .coupon-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1.5px solid #F0F0F0;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .coupon-card:active {
+      transform: scale(0.98);
+    }
+
+    .coupon-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .coupon-card p {
+      font-size: 13.5px;
+      color: #4A4A4A;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .fine-print {
+      font-size: 11.5px !important;
+      color: var(--text-muted) !important;
+      font-style: italic;
+      margin-bottom: 0 !important;
+    }
+
+    .claim-tag {
+      margin-top: 12px;
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* GOLDEN COUPON STYLING (#8) */
+    .coupon-card.golden {
+      background: var(--gold-bg);
+      border: 2px solid var(--gold-border);
+      box-shadow: 0 8px 24px rgba(245, 197, 24, 0.2);
+    }
+
+    .coupon-card.golden .claim-tag {
+      color: var(--gold-accent);
+    }
+
+    /* DISABLED / CLAIMED STATE */
+    .coupon-card.claimed {
+      background: #F2F2F2 !important;
+      border-color: #E0E0E0 !important;
+      box-shadow: none !important;
+      cursor: not-allowed !important;
+      opacity: 0.7;
+    }
+
+    .coupon-card.claimed * {
+      color: #9E9E9E !important;
+    }
+
+    .coupon-card.claimed::after {
+      content: "CLAIMED ✓";
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #9E9E9E;
+      color: #FFF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- MODAL DIALOG --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .modal h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .modal-field {
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .modal-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      background: #F0F0F0;
+      color: var(--text-main);
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-confirm {
+      flex: 1;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- 1. LOGIN SCREEN -->
+  <div id="login-screen" class="login-card">
+    <h2>Welcome! 💕</h2>
+    <p>Please enter your username to view your coupons.</p>
+    <form id="login-form">
+      <input type="text" id="username-input" placeholder="Enter username..." autocomplete="off" required>
+      <button type="submit" class="btn-primary">Unlock Coupons</button>
+      <div id="login-error" class="error-msg">Access denied. Only Babbiii is allowed! 😤</div>
+    </form>
+  </div>
+
+  <!-- 2. MAIN APP SCREEN -->
+  <div id="app-screen">
+    
+    <!-- Cover Header -->
+    <div class="cover-card">
+      <span class="badge">🎟️ LIMITED EDITION</span>
+      <h1>BABBIII BENEFITS PACKAGE™</h1>
+      <div class="cover-meta">
+        <strong>Issued for:</strong> 8 months of putting up with each other 😌💕<br>
+        <strong>Exclusively issued to:</strong> Maverick<br>
+        <strong>Issued by:</strong> Your Babbiii 😚<br>
+        <strong>Validity:</strong> Forever-ish. No refunds.<br>
+        <span style="font-size: 11px; color: #a0a0a0; margin-top: 4px; display: inline-block;">
+          ⚠️ Unauthorized transfer, resale, duplication, or redemption by Geto Suguru is strictly prohibited. 😭
+        </span>
+      </div>
+    </div>
+
+    <!-- Coupon List -->
+    <div class="coupon-list" id="coupon-container"></div>
+  </div>
+
+</div>
+
+<!-- 3. REDEMPTION MODAL DIALOG -->
+<div class="modal-overlay" id="claim-modal">
+  <div class="modal">
+    <h3 id="modal-title">Redeem Coupon?</h3>
+    <p>⚠️ This is a <strong>one-time use</strong> coupon. Are you sure you want to claim this now?</p>
+
+    <div class="modal-field">
+      <label for="claim-date">When do you want to use this?</label>
+      <input type="date" id="claim-date">
+    </div>
+
+    <div class="modal-field">
+      <label for="claim-location">Location / Details (Optional)</label>
+      <input type="text" id="claim-location" placeholder="e.g., Mall, Bed, Restaurant, etc.">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" id="confirm-claim-btn">Yes, Redeem!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- DATA ---
+  const coupons = [
+    {
+      id: 1,
+      title: "🛋️ THE “WALA KANG I-IISIPIN” PASS",
+      desc: "Redeem for one date/day completely planned by me. You just show up, babbiii. Ako bahala saan, anong kakainin, at anong gagawin. 😌💕",
+      finePrint: "Complaining about my planning skills is prohibited until AFTER the date. 😂",
+      isGold: false
+    },
+    {
+      id: 2,
+      title: "😴 DO-NOTHING-TOGETHER COUPON",
+      desc: "Redeem when pagod ka na sa work, people, traffic... basically life. No plans. No pressure. We can sleep, cuddle, eat, watch something, or literally do nothing together.",
+      finePrint: "Being productive is strictly discouraged. 😌",
+      isGold: false
+    },
+    {
+      id: 3,
+      title: "👑 BABBIII IS ALWAYS RIGHT — LIMITED EDITION",
+      desc: "For ONE harmless disagreement, I will stop arguing and declare: “Yes po babbiii, tama ka po.” 😇",
+      finePrint: "Valid ONCE. Choose wisely.",
+      isGold: false
+    },
+    {
+      id: 4,
+      title: "🍜 THE “ANO GUSTO MONG KAININ?” MIRACLE PASS",
+      desc: "For once, you don't have to answer “kahit ano.” 😂 Pick what you're craving and we'll get/eat it together. My treat. 💕",
+      finePrint: "Subject to the financial stability of your loving girlfriend HAHAHA.",
+      isGold: false
+    },
+    {
+      id: 5,
+      title: "💆🏻‍♂️ BABBIII DE-STRESS PACKAGE™",
+      desc: "Includes: head/back scratches or massage + cuddles + your choice of show/movie + snacks + NO WORK TALK unless YOU want to rant.",
+      finePrint: "Ranting is permitted. Solutions will only be provided upon request. 😌💕",
+      isGold: false
+    },
+    {
+      id: 6,
+      title: "🎮 THE “YOU PICK, I WON'T COMPLAIN” PASS",
+      desc: "You choose what we do: game, movie, anime, activity, tambay—whatever you feel like. And I will participate without saying “ikaw bahala” after asking you to choose. 😭😂",
+      finePrint: "If you choose a 6-hour activity, snacks are legally required.",
+      isGold: false
+    },
+    {
+      id: 7,
+      title: "🥹 EMERGENCY “REMIND ME YOU LOVE ME” COUPON",
+      desc: "Redeem on a bad day, insecure day, stressful day, or simply because you want lambing. I'll tell you exactly what I love and appreciate about you—no jokes, no generic answers, no rushing. 💕",
+      finePrint: "Technically unlimited even after redemption. You never actually need a coupon for this. 🥹",
+      isGold: false
+    },
+    {
+      id: 8,
+      title: "🃏 THE GOLDEN BABBIII COUPON — WILD CARD",
+      desc: "You decide what this coupon does. 👀 One reasonable request. Date? Food? Massage? Favor? Extra lambing? Something random? Your choice. 😌",
+      finePrint: "Expiry: Never. | Transferable: Absolutely not. | Can be exchanged for Geto: NO. You have enough Geto. 😤",
+      isGold: true
+    }
+  ];
+
+  // --- NOTIFICATION CONFIGURATION ---
+  // TIP: Put your Discord/Slack Webhook URL or EmailJS code here so you receive an instant message when he claims a coupon!
+  const WEBHOOK_URL = ""; // Optional: Paste Discord Webhook URL here if you use one.
+
+  let activeCouponId = null;
+
+  // Load claimed items from LocalStorage so claims persist on refresh
+  let claimedCoupons = JSON.parse(localStorage.getItem('claimed_coupons')) || [];
+
+  // --- LOGIN LOGIC ---
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('username-input').value.trim();
+    
+    // Case-insensitive check for "Babbiii"
+    if (input.toLowerCase() === "babbiii") {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display = 'block';
+      renderCoupons();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  });
+
+  // --- RENDER COUPONS ---
+  function renderCoupons() {
+    const container = document.getElementById('coupon-container');
+    container.innerHTML = '';
+
+    coupons.forEach(coupon => {
+      const isClaimed = claimedCoupons.includes(coupon.id);
+      const card = document.createElement('div');
+      
+      card.className = `coupon-card ${coupon.isGold ? 'golden' : ''} ${isClaimed ? 'claimed' : ''}`;
+      
+      card.innerHTML = `
+        <h3>${coupon.title}</h3>
+        <p>${coupon.desc}</p>
+        <p class="fine-print">Fine print: ${coupon.finePrint}</p>
+        ${!isClaimed ? `<span class="claim-tag">Tap to Redeem 🎟️</span>` : ''}
+      `;
+
+      if (!isClaimed) {
+        card.onclick = () => openModal(coupon.id);
+      }
+
+      container.appendChild(card);
+    });
+  }
+
+  // --- MODAL LOGIC ---
+  function openModal(id) {
+    activeCouponId = id;
+    const coupon = coupons.find(c => c.id === id);
+    document.getElementById('modal-title').innerText = `Redeem: ${coupon.title}`;
+    
+    // Set default date to today
+    document.getElementById('claim-date').valueAsDate = new Date();
+    document.getElementById('claim-location').value = '';
+    
+    document.getElementById('claim-modal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('claim-modal').classList.remove('active');
+    activeCouponId = null;
+  }
+
+  // --- CLAIM HANDLING ---
+  document.getElementById('confirm-claim-btn').addEventListener('click', function() {
+    if (!activeCouponId) return;
+
+    const chosenDate = document.getElementById('claim-date').value;
+    const chosenLocation = document.getElementById('claim-location').value.trim() || 'Not specified';
+    const coupon = coupons.find(c => c.id === activeCouponId);
+
+    // Save claim state
+    claimedCoupons.push(activeCouponId);
+    localStorage.setItem('claimed_coupons', JSON.stringify(claimedCoupons));
+
+    // Send Notification to you
+    sendNotification(coupon.title, chosenDate, chosenLocation);
+
+    // Refresh UI & Close Modal
+    closeModal();
+    renderCoupons();
+
+    alert(`🎉 Coupon redeemed successfully!\nYour Babbiii has been notified!`);
+  });
+
+  // --- NOTIFICATION FUNCTION ---
+  function sendNotification(couponTitle, date, location) {
+    const message = `🚨 COUPON CLAIMED! 🚨\n\nMaverick just redeemed:\n🎟️ "${couponTitle}"\n📅 Planned Date: ${date}\n📍 Location/Details: ${location}`;
+
+    // Option A: Send via Webhook (Discord/Slack/etc) if URL is configured
+    if (WEBHOOK_URL) {
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: message })
+      }).catch(err => console.error("Notification Error:", err));
+    }
+
+    // Option B: Native Browser Alert/Log backup
+    console.log("NOTIFICATION SENT TO GIRLFRIEND:\n", message);
+  }
+</script>
+</body>
+</html>
